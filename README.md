@@ -141,6 +141,49 @@ The tools are then available as `temp-email_list_accounts`,
 `temp-email_list_folders`, `temp-email_list_messages`,
 `temp-email_read_message` and `temp-email_archive_message`.
 
+## Docker
+
+Build the image:
+
+```sh
+docker build -t temp-email-mcp .
+```
+
+Released images are published to `ghcr.io/st3fan/temp-email-mcp`
+(`latest`, and `<version>` for each `v*` tag) for `amd64` and `arm64`.
+
+The image defaults to the HTTP transport on port 8080, so it fits the
+"run it on a server" use case. Mount the accounts file read-only and
+point `CHECKEMAIL_ACCOUNTS` at it:
+
+```sh
+docker run --rm -p 8080:8080 \
+  -v ~/.config/checkemail/accounts.json:/etc/temp-email/accounts.json:ro \
+  -e CHECKEMAIL_ACCOUNTS=/etc/temp-email/accounts.json \
+  temp-email-mcp
+```
+
+Then add it to OpenCode as a remote server:
+
+```sh
+opencode mcp add temp-email --url http://localhost:8080/mcp
+```
+
+MCP clients that launch a server themselves can use stdio through
+`docker run -i`:
+
+```sh
+opencode mcp add temp-email -- \
+  docker run -i --rm \
+  -v ~/.config/checkemail/accounts.json:/etc/temp-email/accounts.json:ro \
+  -e CHECKEMAIL_ACCOUNTS=/etc/temp-email/accounts.json \
+  temp-email-mcp --transport stdio
+```
+
+A mounted `accounts.json` may carry group/world-readable permissions,
+which the server warns about on startup. The warning is informational;
+`chmod 600` on the host file silences it.
+
 ## Tools
 
 | Tool | Behaviour |
