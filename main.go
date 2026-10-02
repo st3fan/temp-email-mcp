@@ -10,7 +10,8 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-const serverVersion = "0.1.0"
+// serverVersion is overridden at build time with -ldflags -X for releases.
+var serverVersion = "0.1.0"
 
 func main() {
 	transport := flag.String("transport", "stdio", "transport to serve on: stdio, sse or http")
