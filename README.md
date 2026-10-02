@@ -120,6 +120,10 @@ add it as a remote server:
 temp-email-mcp --transport http --addr localhost:8080
 ```
 
+```sh
+opencode mcp add temp-email --url http://localhost:8080/mcp
+```
+
 ```jsonc
 {
   "mcp": {
